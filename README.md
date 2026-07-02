@@ -1,9 +1,5 @@
 <div align="center">
 
-<!-- Custom persona-card banner — upload persona-card.svg to .github/assets/ in your repo
-     and this will render exactly like the GitSkins-style hero card -->
-<img src="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/main/.github/assets/persona-card.svg" width="100%" alt="profile card"/>
-
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&duration=2800&pause=900&color=E8A33D&center=true&vCenter=true&width=680&lines=Building+RAG+Pipelines+%26+LLM+Systems;Shipping+production+AI+%2F+Full-Stack+systems;Currently+deepening+applied+ML..." alt="Typing SVG" />
 
 <br/>
@@ -67,7 +63,7 @@ $ cat current_focus.txt
 ## `> live_metrics --poll`
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ChitrangiBhatnagar&show_icons=true&hide_border=true&count_private=true&rank_icon=github&bg_color=15110D&title_color=E8A33D&icon_color=E8A33D&text_color=C9A876&border_color=3A2A18" height="165" />
+  <img src="https://github-readme-stats.vercel.app/api?username=ChitrangiBhatnagar&show_icons=true&hide_border=true&rank_icon=github&bg_color=15110D&title_color=E8A33D&icon_color=E8A33D&text_color=C9A876&border_color=3A2A18" height="165" />
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ChitrangiBhatnagar&layout=donut&hide_border=true&langs_count=6&bg_color=15110D&title_color=E8A33D&text_color=C9A876&border_color=3A2A18" height="165" />
 </p>
 
