@@ -1,16 +1,18 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=26&duration=2600&pause=900&color=1D9E75&center=true&vCenter=true&width=680&lines=Chitrangi+Bhatnagar;AI%2FML+Engineer+%7C+Full-Stack+Dev;Building+RAG+Pipelines+%26+LLM+Systems;Currently+shipping+something...+%F0%9F%9A%80" alt="Typing SVG" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:114b2f,100:39FF14&height=180&section=header&text=Chitrangi%20Bhatnagar&fontSize=42&fontColor=39FF14&animation=fadeIn&fontAlignY=38&desc=AI%2FML%20Engineer%20%7C%20Full-Stack%20Developer&descAlignY=58&descColor=8CFFB0" width="100%"/>
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=2600&pause=900&color=39FF14&center=true&vCenter=true&width=680&lines=Building+RAG+Pipelines+%26+LLM+Systems;Shipping+production+AI+%2F+Full-Stack+systems;Currently+deepening+applied+ML...+%F0%9F%9F%A2" alt="Typing SVG" />
 
 <br/>
 
-<img src="https://komarev.com/ghpvc/?username=ChitrangiBhatnagar&label=PROFILE%20VIEWS&color=1D9E75&style=for-the-badge" alt="profile views"/>
-<img src="https://img.shields.io/github/followers/ChitrangiBhatnagar?label=FOLLOWERS&style=for-the-badge&color=1D9E75" alt="followers"/>
-<img src="https://img.shields.io/badge/dynamic/json?label=STATUS&query=%24.status&url=https%3A%2F%2Fraw.githubusercontent.com%2FChitrangiBhatnagar%2FChitrangiBhatnagar%2Fmain%2Fstatus.json&style=for-the-badge&color=success" alt="live status"/>
+<img src="https://komarev.com/ghpvc/?username=ChitrangiBhatnagar&label=PROFILE+VIEWS&color=39FF14&style=for-the-badge&labelColor=0d1117" alt="profile views"/>
+<img src="https://img.shields.io/github/followers/ChitrangiBhatnagar?label=FOLLOWERS&style=for-the-badge&color=39FF14&labelColor=0d1117" alt="followers"/>
+<img src="https://img.shields.io/badge/OPEN_TO-WORK-39FF14?style=for-the-badge&labelColor=0d1117" alt="open to work"/>
 
 </div>
 
-<pre align="center">
+<pre align="center" style="color:#39FF14">
 $ whoami
 > AI Engineer & ML Practitioner — 3 internships, 5+ shipped AI systems in production
 > Stack spans RAG pipelines, LLM orchestration, and full production deployment (API → UI)
@@ -22,9 +24,9 @@ $ cat current_focus.txt
 <p align="center">
   <a href="https://www.linkedin.com/in/chitrangi-bhatnagar-2a591b255"><img src="https://img.shields.io/badge/LinkedIn-Chitrangi_Bhatnagar-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
   &nbsp;
-  <a href="mailto:chitrangibhatnagar@gmail.com"><img src="https://img.shields.io/badge/Email-chitrangibhatnagar@gmail.com-EA4335?style=flat&logo=gmail&logoColor=white" /></a>
+  <a href="mailto:chitrangibhatnagar@gmail.com"><img src="https://img.shields.io/badge/Email-chitrangibhatnagar@gmail.com-39FF14?style=flat&logo=gmail&logoColor=white&labelColor=0d1117" /></a>
   &nbsp;
-  <a href="https://chitrangibhatnagar.github.io/chitrangi-ai-nexus/"><img src="https://img.shields.io/badge/Portfolio-Live-1D9E75?style=flat&logo=vercel&logoColor=white" /></a>
+  <a href="https://chitrangibhatnagar.github.io/chitrangi-ai-nexus/"><img src="https://img.shields.io/badge/Portfolio-Live-39FF14?style=flat&logo=vercel&logoColor=white&labelColor=0d1117" /></a>
 </p>
 
 ---
@@ -38,7 +40,7 @@ $ cat current_focus.txt
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 
-![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=39FF14)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
@@ -54,7 +56,7 @@ $ cat current_focus.txt
 ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 ![Airflow](https://img.shields.io/badge/Airflow-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
-![Pinecone](https://img.shields.io/badge/Pinecone-000000?style=for-the-badge&logoColor=white)
+![Pinecone](https://img.shields.io/badge/Pinecone-000000?style=for-the-badge&logoColor=39FF14)
 
 </div>
 
@@ -63,16 +65,16 @@ $ cat current_focus.txt
 ## `> live_metrics --poll`
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ChitrangiBhatnagar&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&rank_icon=github" height="165" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ChitrangiBhatnagar&layout=donut&theme=tokyonight&hide_border=true&langs_count=6" height="165" />
+  <img src="https://github-readme-stats.vercel.app/api?username=ChitrangiBhatnagar&show_icons=true&theme=merko&hide_border=true&count_private=true&rank_icon=github&bg_color=0d1117&title_color=39FF14&icon_color=39FF14&text_color=8CFFB0" height="165" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ChitrangiBhatnagar&layout=donut&theme=merko&hide_border=true&langs_count=6&bg_color=0d1117&title_color=39FF14&text_color=8CFFB0" height="165" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=ChitrangiBhatnagar&theme=tokyonight&hide_border=true" height="150" />
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=ChitrangiBhatnagar&theme=merko&hide_border=true&background=0D1117&ring=39FF14&fire=39FF14&currStreakLabel=39FF14" height="150" />
 </p>
 
 <p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=ChitrangiBhatnagar&theme=tokyo-night&hide_border=true&area=true&area_color=1D9E75" />
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=ChitrangiBhatnagar&theme=react-dark&hide_border=true&area=true&color=39FF14&line=39FF14&point=8CFFB0&area_color=39FF14&bg_color=0d1117" />
 </p>
 
 <!-- Weekly coding activity — auto-refreshed daily by the WakaTime workflow in .github/workflows/update-readme.yml -->
@@ -90,7 +92,7 @@ No data yet — connect WakaTime and let the scheduled workflow populate this bl
 </details>
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=ChitrangiBhatnagar&repo=chitrangi-ai-nexus&theme=tokyonight&hide_border=true" />
+  <img src="https://github-readme-stats.vercel.app/api/pin/?username=ChitrangiBhatnagar&repo=chitrangi-ai-nexus&theme=merko&hide_border=true&bg_color=0d1117&title_color=39FF14&text_color=8CFFB0" />
 </div>
 
 ---
@@ -189,5 +191,7 @@ B.Tech CS (AI & ML) · Presidency University · CGPA **8.54** · graduating 2026
 Open to **internship & full-time roles** in AI/ML Engineering, Data Science, or Full-Stack AI
 
 <sub>Last README auto-sync: handled by GitHub Actions on every push · see <code>.github/workflows/update-readme.yml</code></sub>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:39FF14,100:0d1117&height=100&section=footer" width="100%"/>
 
 </div>
