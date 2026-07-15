@@ -29,8 +29,7 @@
 ## 📊 `> github_stats --fetch`
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ChitrangiBhatnagar&show_icons=true&theme=radical&title_color=E8A33D&icon_color=E8A33D&text_color=F5EFE6&bg_color=0D0A07&hide_border=true" height="192" alt="GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ChitrangiBhatnagar&layout=compact&theme=radical&title_color=E8A33D&text_color=F5EFE6&bg_color=0D0A07&hide_border=true" height="192" alt="Top Languages" />
+  <img src="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/main/metrics.svg" width="100%" alt="GitHub Metrics" />
 </p>
 <p align="center">
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=ChitrangiBhatnagar&theme=radical&fire=E8A33D&ring=E8A33D&currStreakLabel=E8A33D&currStreakNum=F5EFE6&sideNums=F5EFE6&sideLabels=F5EFE6&dates=F5EFE6&background=0D0A07&hide_border=true" height="192" alt="GitHub Streak" />
@@ -240,9 +239,9 @@ No data yet — connect WakaTime and let the scheduled workflow populate this bl
 ## 🐍 `> contribution_graph --animated`
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/output/github-contribution-grid-snake-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/output/github-contribution-grid-snake.svg" />
-  <img alt="contribution snake animation" src="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/output/github-contribution-grid-snake.svg" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/output/github-contribution-grid-snake-dark.svg?v=2" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/output/github-contribution-grid-snake.svg?v=2" />
+  <img alt="contribution snake animation" src="https://raw.githubusercontent.com/ChitrangiBhatnagar/ChitrangiBhatnagar/output/github-contribution-grid-snake.svg?v=2" />
 </picture>
 
 ---
