@@ -18,17 +18,6 @@
       
       .bar-bg { fill: #15110D; rx: 4; }
       .bar-fill { fill: #E8A33D; rx: 4; }
-      
-      .decoder-anim {
-        animation: glitch 3s infinite;
-      }
-      @keyframes glitch {
-        0% { opacity: 1; transform: translate(0, 0); }
-        2% { opacity: 0.8; transform: translate(-2px, 1px); }
-        4% { opacity: 1; transform: translate(2px, -1px); }
-        6% { opacity: 0.9; transform: translate(0, 0); }
-        100% { opacity: 1; transform: translate(0, 0); }
-      }
     </style>
     
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
@@ -52,7 +41,9 @@
     
     <!-- LEFT COLUMN -->
     <!-- Profile Info -->
-    <g class="decoder-anim">
+    <g>
+      <animate attributeName="opacity" values="1;0.7;1;0.9;1;1" dur="4s" repeatCount="indefinite" />
+      <animateTransform attributeName="transform" type="translate" values="0,0; -1,0; 2,0; 0,0; 0,0; 0,0" dur="3s" repeatCount="indefinite" />
       <text x="0" y="0" class="text-amber title">Chitrangi Bhatnagar</text>
       <text x="0" y="22" class="text-light subtitle">&gt; AI Engineer &amp; ML Practitioner</text>
     </g>
@@ -142,7 +133,9 @@
   <!-- Current Focus Footer -->
   <g transform="translate(30, 420)">
     <text x="0" y="0" class="text-amber body">&gt; executing current_focus.sh:</text>
-    <g class="decoder-anim">
+    <g>
+      <animate attributeName="opacity" values="1;0.5;1;0.8;1;1" dur="2s" repeatCount="indefinite" />
+      <animateTransform attributeName="transform" type="translate" values="0,0; -2,0; 1,0; 0,0; 0,0; 0,0" dur="2s" repeatCount="indefinite" />
       <text x="240" y="0" class="text-light body">model evaluation · feature engineering · deployment patterns</text>
     </g>
   </g>
