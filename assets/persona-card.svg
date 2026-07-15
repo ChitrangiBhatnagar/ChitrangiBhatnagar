@@ -42,9 +42,22 @@
     <!-- LEFT COLUMN -->
     <!-- Profile Info -->
     <g>
-      <animate attributeName="opacity" values="1;0.7;1;0.9;1;1" dur="4s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="translate" values="0,0; -1,0; 2,0; 0,0; 0,0; 0,0" dur="3s" repeatCount="indefinite" />
-      <text x="0" y="0" class="text-amber title">Chitrangi Bhatnagar</text>
+      <!-- Final Text -->
+      <text x="0" y="0" class="text-amber title" opacity="1">
+        Chitrangi Bhatnagar
+        <animate attributeName="opacity" values="0;0;0;1;1" keyTimes="0;0.05;0.1;0.11;1" dur="3s" repeatCount="indefinite" />
+      </text>
+      <!-- Scramble Frame 1 -->
+      <text x="0" y="0" class="text-amber title" opacity="0">
+        Ch!t#an&amp;i Bh@t^ag*r
+        <animate attributeName="opacity" values="1;0;0;0;0" keyTimes="0;0.05;0.06;0.11;1" dur="3s" repeatCount="indefinite" />
+      </text>
+      <!-- Scramble Frame 2 -->
+      <text x="0" y="0" class="text-amber title" opacity="0">
+        C%i$ra*g| B~a+na=ar
+        <animate attributeName="opacity" values="0;1;0;0;0" keyTimes="0;0.05;0.1;0.11;1" dur="3s" repeatCount="indefinite" />
+      </text>
+      
       <text x="0" y="22" class="text-light subtitle">&gt; AI Engineer &amp; ML Practitioner</text>
     </g>
     
@@ -134,9 +147,21 @@
   <g transform="translate(30, 420)">
     <text x="0" y="0" class="text-amber body">&gt; executing current_focus.sh:</text>
     <g>
-      <animate attributeName="opacity" values="1;0.5;1;0.8;1;1" dur="2s" repeatCount="indefinite" />
-      <animateTransform attributeName="transform" type="translate" values="0,0; -2,0; 1,0; 0,0; 0,0; 0,0" dur="2s" repeatCount="indefinite" />
-      <text x="240" y="0" class="text-light body">model evaluation · feature engineering · deployment patterns</text>
+      <!-- Final Text -->
+      <text x="240" y="0" class="text-light body" opacity="1">
+        model evaluation · feature engineering · deployment patterns
+        <animate attributeName="opacity" values="0;0;0;1;1" keyTimes="0;0.1;0.2;0.21;1" dur="4s" repeatCount="indefinite" />
+      </text>
+      <!-- Scramble Frame 1 -->
+      <text x="240" y="0" class="text-light body" opacity="0">
+        m0d3l ev@lu4t10n · f3@t#re 3n&amp;!n33r!ng · d3pl0ym3nt p@tt3rns
+        <animate attributeName="opacity" values="1;0;0;0;0" keyTimes="0;0.1;0.11;0.21;1" dur="4s" repeatCount="indefinite" />
+      </text>
+      <!-- Scramble Frame 2 -->
+      <text x="240" y="0" class="text-light body" opacity="0">
+        m*d&amp;l e$a|u^t1on · f%a~u(e e_gin$er)ng · d*p(oym%nt p^tt&amp;rns
+        <animate attributeName="opacity" values="0;1;0;0;0" keyTimes="0;0.1;0.2;0.21;1" dur="4s" repeatCount="indefinite" />
+      </text>
     </g>
   </g>
   
