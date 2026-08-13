@@ -7,8 +7,12 @@
 <h3><code>avi@github ~ $ whoami</code></h3>
 <table>
   <tr>
-    <td valign="top"><img src="./avi-ascii.svg" width="370" alt="persona ascii" /></td>
-    <td valign="top"><img src="./info-card.svg" width="490" alt="info card" /></td>
+    <td valign="middle" width="360">
+      <img src="./avi-ascii.svg" width="360" alt="persona portrait" />
+    </td>
+    <td valign="middle" width="520">
+      <img src="./info-card.svg" width="520" alt="info card" />
+    </td>
   </tr>
 </table>
 
