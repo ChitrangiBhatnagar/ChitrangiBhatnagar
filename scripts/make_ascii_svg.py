@@ -49,20 +49,13 @@ def build_svg(grid: list[str]) -> str:
     text_group = ET.SubElement(svg, "g", {"font-family": "monospace", "font-size": "12", "fill": TEXT_COLOR})
     ET.SubElement(text_group, "text", {"x": "30", "y": "28", "fill": TEXT_COLOR, "font-size": "16"}).text = "avi@github ~ $ ./contributions.sh"
 
+    # Keep rows fully visible — GitHub README often ignores SMIL animations,
+    # which left animated frames stuck at opacity 0 and looked "broken/slow".
     start_y = 54
     for row_index, row in enumerate(grid):
         y = start_y + row_index * 12
         row_group = ET.SubElement(text_group, "text", {"x": "30", "y": str(y)})
         row_group.text = row
-        animate = ET.SubElement(row_group, "animate", {
-            "attributeName": "opacity",
-            "values": "0;0;1;1",
-            "keyTimes": f"0;{row_index / (len(grid) + 8):.4f};{(row_index + 2) / (len(grid) + 8):.4f};1",
-            "dur": "5s",
-            "repeatCount": "1",
-            "fill": "freeze",
-        })
-        animate.tail = None
 
     footer = ET.SubElement(text_group, "text", {"x": "30", "y": str(height - 24), "font-size": "13"})
     footer.text = "avi@github ~ $ whoami"

@@ -61,16 +61,19 @@ def build_svg(static: bool) -> str:
             })
         y += 64
 
-    footer = ET.SubElement(svg, "text", {"x": "24", "y": str(HEIGHT - 28), "fill": DIM, "font-family": "monospace", "font-size": "12"})
-    footer.text = "STATIC=1 for local preview"
+    # GitHub README often skips SMIL animation — keep cards fully visible by default.
+    if not static:
+        footer = ET.SubElement(svg, "text", {"x": "24", "y": str(HEIGHT - 28), "fill": DIM, "font-family": "monospace", "font-size": "12"})
+        footer.text = "animated preview"
     return ET.tostring(svg, encoding="unicode")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Create the profile info card SVG.")
     parser.add_argument("--output", type=Path, default=Path("info-card.svg"), help="Output SVG path")
+    parser.add_argument("--animate", action="store_true", help="Enable fade-in animation (not reliable on GitHub README)")
     args = parser.parse_args()
-    static = os.environ.get("STATIC") == "1"
+    static = not args.animate and os.environ.get("STATIC", "1") != "0"
     args.output.write_text(build_svg(static=static), encoding="utf-8")
 
 
