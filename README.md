@@ -1,43 +1,18 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0D0A07,50:3D2410,100:E8A33D&height=170&section=header&text=Chitrangi%20Bhatnagar&fontSize=38&fontColor=F5EFE6&animation=fadeIn&fontAlignY=36&desc=AI%2FML%20Engineer%20%C2%B7%20Full-Stack%20Developer%20%C2%B7%20Bengaluru%2C%20India&descAlignY=56&descColor=F5C776" width="100%"/>
+<h3><code>avi@github ~ $ ./contributions.sh</code></h3>
+<img src="./contrib-heatmap.svg" width="860" />
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=19&duration=2800&pause=900&color=E8A33D&center=true&vCenter=true&width=700&lines=Building+RAG+Pipelines+%26+LLM+Systems;Shipping+production+AI+%2F+Full-Stack+systems;Currently+deepening+applied+ML..." alt="Typing SVG" />
+<br><br>
 
-<br/>
+<h3><code>avi@github ~ $ whoami</code></h3>
+<table>
+  <tr>
+    <td valign="top"><img src="./avi-ascii.svg" width="370" /></td>
+    <td valign="top"><img src="./info-card.svg" width="490" /></td>
+  </tr>
+</table>
 
-<img src="https://komarev.com/ghpvc/?username=ChitrangiBhatnagar&label=PROFILE+VIEWS&color=E8A33D&style=for-the-badge&labelColor=15110D" alt="profile views"/>
-<img src="https://img.shields.io/github/followers/ChitrangiBhatnagar?label=FOLLOWERS&style=for-the-badge&color=E8A33D&labelColor=15110D" alt="followers"/>
-<img src="https://img.shields.io/badge/OPEN_TO-WORK-E8A33D?style=for-the-badge&labelColor=15110D" alt="open to work"/>
-
-<p align="center">
-  <a href="https://www.linkedin.com/in/chitrangi-bhatnagar-2a591b255"><img src="https://img.shields.io/badge/LinkedIn-Chitrangi_Bhatnagar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
-  <a href="mailto:chitrangibhatnagar@gmail.com"><img src="https://img.shields.io/badge/Email-chitrangibhatnagar@gmail.com-E8A33D?style=for-the-badge&logo=gmail&logoColor=white&labelColor=15110D" /></a>
-  <a href="https://chitrangibhatnagar.github.io/chitrangi-ai-nexus/"><img src="https://img.shields.io/badge/Portfolio-Live-E8A33D?style=for-the-badge&logo=vercel&logoColor=white&labelColor=15110D" /></a>
-</p>
-
-</div>
-
-<p align="center">
-<img src="assets/persona-card.svg" width="100%">
-</p>
-
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
-
-## 📊 `> github_stats --fetch`
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ChitrangiBhatnagar&show_icons=true&title_color=E8A33D&icon_color=E8A33D&text_color=F5EFE6&bg_color=0D0A07&hide_border=true" height="192" alt="GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=ChitrangiBhatnagar&layout=compact&title_color=E8A33D&text_color=F5EFE6&bg_color=0D0A07&hide_border=true" height="192" alt="Top Languages" />
-</p>
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=ChitrangiBhatnagar&theme=radical&fire=E8A33D&ring=E8A33D&currStreakLabel=E8A33D&currStreakNum=F5EFE6&sideNums=F5EFE6&sideLabels=F5EFE6&dates=F5EFE6&background=0D0A07&hide_border=true" height="192" alt="GitHub Streak" />
-</p>
-
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
 </div>
 
 ## 🧑‍💻 `> about_me.sh`
@@ -54,10 +29,6 @@ $ currently
 $ interests
 LLMs | RAG | Backend | Distributed Systems
 ```
-
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
 
 ## 🛠️ `> tech_stack --list`
 
@@ -101,10 +72,6 @@ LLMs | RAG | Backend | Distributed Systems
     </td>
   </tr>
 </table>
-
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
 
 ## 💼 `> ps -ef | grep experience`
 
@@ -156,10 +123,6 @@ LLMs | RAG | Backend | Distributed Systems
   </tr>
 </table>
 
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
-
 ## 🚀 `> ls -la featured_projects/`
 
 <table>
@@ -191,10 +154,6 @@ LLMs | RAG | Backend | Distributed Systems
   </tr>
 </table>
 
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
-
 ## 🏆 `> cat awards.log`
 
 <table>
@@ -207,10 +166,6 @@ LLMs | RAG | Backend | Distributed Systems
     <td><b>🎓 NSS Student Lead 2022–2024</b><br/>Directed 80+ volunteers · 10+ community initiatives</td>
   </tr>
 </table>
-
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
 
 ## 📈 `> live_metrics --poll`
 
@@ -234,18 +189,12 @@ No data yet — connect WakaTime and let the scheduled workflow populate this bl
 <!--END_SECTION:activity-->
 
 <div align="center">
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0D0A07,100:E8A33D&height=2&width=1100" />
-</div>
-
-
-
-<div align="center">
 
 ### `> status`
 B.Tech CS (AI & ML) · Presidency University · CGPA **8.54** · graduating 2026<br/>
 Open to **internship & full-time roles** in AI/ML Engineering, Data Science, or Full-Stack AI
 
-<sub>Last README auto-sync: handled by GitHub Actions on every push · see <code>.github/workflows/update-readme.yml</code></sub>
+<sub>Profile art refreshes daily through <code>.github/workflows/update-profile-art.yml</code></sub>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:E8A33D,100:0D0A07&height=110&section=footer" width="100%"/>
 
