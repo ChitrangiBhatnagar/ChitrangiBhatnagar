@@ -2,29 +2,28 @@
   <img src="cards/hero.svg" width="100%" alt="Chitrangi Bhatnagar"/>
 </div>
 
-<p align="center">
-  <a href="https://www.linkedin.com/in/chitrangi-bhatnagar-2a591b255"><img src="cards/tile-linkedin.svg" width="32.5%" alt="LinkedIn"/></a>
-  <a href="https://chitrangibhatnagar.github.io/chitrangi-ai-nexus/"><img src="cards/tile-portfolio.svg" width="32.5%" alt="Portfolio"/></a>
-  <a href="mailto:chitrangibhatnagar@gmail.com"><img src="cards/tile-email.svg" width="32.5%" alt="Email"/></a>
-</p>
+<div align="center">
+  <img src="cards/graph.svg" width="100%" alt="Contribution graph"/>
+</div>
 
 <div align="center">
   <img src="cards/chart.svg" width="100%" alt="Monthly contributions"/>
 </div>
 
 <p align="center">
-  <a href="https://github.com/ChitrangiBhatnagar/agentic-observability-platform"><img src="cards/repo-agentic-observability.svg" width="100%" alt="Agentic Observability"/></a>
+  <a href="https://github.com/ChitrangiBhatnagar"><img src="cards/tile-streak.svg" width="32.5%" alt="Streak"/></a>
+  <a href="https://chitrangibhatnagar.github.io/chitrangi-ai-nexus/"><img src="cards/tile-contribs.svg" width="32.5%" alt="Contributions"/></a>
+  <a href="https://www.linkedin.com/in/chitrangi-bhatnagar-2a591b255"><img src="cards/tile-active.svg" width="32.5%" alt="Active days"/></a>
 </p>
+
+<!-- bento / mosaic project grid -->
 <p align="center">
-  <a href="https://github.com/ChitrangiBhatnagar/ResearchOZ"><img src="cards/repo-research-oz.svg" width="100%" alt="ResearchOZ"/></a>
+  <a href="https://github.com/ChitrangiBhatnagar/agentic-observability-platform"><img src="cards/repo-agentic-observability.svg" width="64%" alt="Agentic Observability"/></a>
+  <a href="https://github.com/ChitrangiBhatnagar/ResearchOZ"><img src="cards/repo-research-oz.svg" width="34%" alt="ResearchOZ"/></a>
 </p>
 <p align="center">
   <a href="https://github.com/ChitrangiBhatnagar/chitrangi-ai-nexus"><img src="cards/repo-ai-nexus.svg" width="100%" alt="chitrangi-ai-nexus"/></a>
 </p>
-
-<div align="center">
-  <img src="cards/graph.svg" width="100%" alt="Contribution graph"/>
-</div>
 
 <details>
 <summary><b>weekly coding</b></summary>

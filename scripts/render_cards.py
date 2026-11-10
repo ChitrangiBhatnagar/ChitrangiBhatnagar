@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Render animated SVG profile cards into cards/.
 
-Brand tokens match chitrangi-ai-nexus (Space Grotesk + JetBrains Mono,
-neural black + cyan). Set STATIC=1 (or --static) to freeze the final frame.
+Palette (user board):
+  Chinese Black #0C1519 · Dark Jungle Green #162127 · Jet #3A3534
+  Coffee #724B39 · Antique Brass #CF9D7B
+
+Motion: one shared keyframe set; page plays hero → graph → bars → tiles → repos.
+Set STATIC=1 (or --static) to freeze the final frame for screenshots.
 """
 
 from __future__ import annotations
@@ -10,7 +14,6 @@ from __future__ import annotations
 import argparse
 import base64
 import html
-import io
 import json
 import os
 import re
@@ -26,26 +29,25 @@ ROOT = Path(__file__).resolve().parents[1]
 CARDS = ROOT / "cards"
 DATA = ROOT / "data" / "contributions.json"
 CACHE = ROOT / ".cache" / "fonts"
-PORTRAIT_CANDIDATES = [
-    ROOT / "assets" / "persona-photo.jpg",
-    ROOT / "me.jpg",
-]
 
-# Website design tokens (chitrangi-ai-nexus)
-BG = "#151413"
-CARD = "#1A1D24"
-PANEL = "#22262F"
-TEXT = "#E6FFFF"
-MUTED = "#9BA3AF"
-BRAND = "#00BFFF"
-BRAND_DIM = "#007A99"
-BORDER = "#2C3340"
-HEAT = ["#0D2A33", "#0A4A5C", "#067A96", "#00A0CC", "#00BFFF"]
+# —— palette ——
+BG = "#0C1519"          # Chinese Black
+CARD = "#162127"        # Dark Jungle Green
+JET = "#3A3534"         # Jet
+COFFEE = "#724B39"      # Coffee
+BRASS = "#CF9D7B"       # Antique Brass
+TEXT = "#F2E6DA"
+MUTED = "#A89080"
+HEAT = ["#162127", "#3A3534", "#724B39", "#A87A5C", "#CF9D7B"]
 
-FONT_DISPLAY = "Space Grotesk"
+FONT_DISPLAY = "Cormorant Garamond"
+FONT_UI = "Space Grotesk"
 FONT_MONO = "JetBrains Mono"
 
 FONT_SOURCES = {
+    "Cormorant-Regular.ttf": "https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@5.2.8/latin-400-normal.ttf",
+    "Cormorant-Medium.ttf": "https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@5.2.8/latin-500-normal.ttf",
+    "Cormorant-Bold.ttf": "https://cdn.jsdelivr.net/fontsource/fonts/cormorant-garamond@5.2.8/latin-700-normal.ttf",
     "SpaceGrotesk-Regular.ttf": "https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@5.2.8/latin-400-normal.ttf",
     "SpaceGrotesk-Medium.ttf": "https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@5.2.8/latin-500-normal.ttf",
     "SpaceGrotesk-Bold.ttf": "https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@5.2.8/latin-700-normal.ttf",
@@ -53,73 +55,52 @@ FONT_SOURCES = {
     "JetBrainsMono-Bold.ttf": "https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@v2.304/fonts/ttf/JetBrainsMono-Bold.ttf",
 }
 
-NAME = "Chitrangi Bhatnagar"
-TAGLINE = "AI engineer building production LLM systems — RAG, orchestration, full-stack."
-LOCATION = "Bengaluru · Open to internships & full-time roles"
+NAME_LINES = ["Chitrangi", "Bhatnagar"]
+TAGLINE = "AI/ML engineer · RAG · orchestration · full-stack"
+STATUS = "Tech Intern at TON Technology Services"
 
-TILES = [
-    {
-        "slug": "linkedin",
-        "label": "LinkedIn",
-        "sub": "connect / career",
-        "href": "https://www.linkedin.com/in/chitrangi-bhatnagar-2a591b255",
-        "glyph": "in",
-    },
-    {
-        "slug": "portfolio",
-        "label": "Portfolio",
-        "sub": "chitrangi-ai-nexus",
-        "href": "https://chitrangibhatnagar.github.io/chitrangi-ai-nexus/",
-        "glyph": "◇",
-    },
-    {
-        "slug": "email",
-        "label": "Email",
-        "sub": "say hello",
-        "href": "mailto:chitrangibhatnagar@gmail.com",
-        "glyph": "@",
-    },
-]
+# Page timing: hero → graph → bars → tiles → repos
+DELAY = {
+    "hero": 0.0,
+    "graph": 0.85,
+    "chart": 2.15,
+    "tile0": 3.35,
+    "tile1": 3.55,
+    "tile2": 3.75,
+    "repo0": 4.55,
+    "repo1": 4.80,
+    "repo2": 5.05,
+}
 
 FEATURED_REPOS = [
     {
         "slug": "agentic-observability",
         "title": "Agentic Observability",
         "repo": "agentic-observability-platform",
-        "blurb": "Multi-agent anomaly detection for cloud systems — RL + RAG threat mitigation.",
+        "blurb": "Multi-agent anomaly detection — RL + RAG for cloud threat mitigation.",
         "stack": "Python · LangChain · TensorFlow",
         "url": "https://github.com/ChitrangiBhatnagar/agentic-observability-platform",
+        "size": "wide",   # bento: 64%
     },
     {
         "slug": "research-oz",
         "title": "ResearchOZ",
         "repo": "ResearchOZ",
-        "blurb": "Research workspace UI for structured exploration and desktop-first workflows.",
-        "stack": "TypeScript · React · Vite",
+        "blurb": "Research workspace for structured exploration.",
+        "stack": "TypeScript · React",
         "url": "https://github.com/ChitrangiBhatnagar/ResearchOZ",
+        "size": "tall",   # bento: 34%
     },
     {
         "slug": "ai-nexus",
         "title": "chitrangi-ai-nexus",
         "repo": "chitrangi-ai-nexus",
-        "blurb": "Personal portfolio with neural-theme motion, CI/CD, and GitHub Pages deploy.",
-        "stack": "React 18 · TypeScript · Vite",
+        "blurb": "Portfolio with motion, CI/CD, and GitHub Pages.",
+        "stack": "React 18 · Vite",
         "url": "https://github.com/ChitrangiBhatnagar/chitrangi-ai-nexus",
+        "size": "full",   # bento: 100%
     },
 ]
-
-# Stagger: page plays top → bottom (seconds)
-DELAY = {
-    "hero": 0.0,
-    "tile0": 0.45,
-    "tile1": 0.60,
-    "tile2": 0.75,
-    "chart": 1.05,
-    "repo0": 1.55,
-    "repo1": 1.85,
-    "repo2": 2.15,
-    "graph": 2.55,
-}
 
 
 def _esc(value: object) -> str:
@@ -130,29 +111,23 @@ def _download(url: str, dest: Path) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if dest.exists() and dest.stat().st_size > 1000:
         return dest
-    req = urllib.request.Request(url, headers={"User-Agent": "profile-cards/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "profile-cards/2.0"})
     with urllib.request.urlopen(req, timeout=60) as response:
         dest.write_bytes(response.read())
     return dest
 
 
 def _ensure_fonts() -> dict[str, Path]:
-    paths: dict[str, Path] = {}
-    for name, url in FONT_SOURCES.items():
-        paths[name] = _download(url, CACHE / name)
-    return paths
+    return {name: _download(url, CACHE / name) for name, url in FONT_SOURCES.items()}
 
 
-def _subset_woff(ttf: Path, text: str, weight_hint: str) -> str:
-    """Subset a TTF to the glyphs in `text` and return a CSS @font-face src data URI."""
-    chars = "".join(sorted(set(text)))
-    if not chars:
-        chars = "A"
+def _subset_woff(ttf: Path, text: str, family: str, weight: str) -> str:
+    chars = "".join(sorted(set(text))) or "A"
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "subset.woff"
         unicodes = ",".join(f"U+{ord(ch):04X}" for ch in chars)
         cmd = [
-            os.environ.get("PYTHON", sys.executable),
+            sys.executable,
             "-m",
             "fontTools.subset",
             str(ttf),
@@ -165,10 +140,6 @@ def _subset_woff(ttf: Path, text: str, weight_hint: str) -> str:
         ]
         subprocess.run(cmd, check=True, capture_output=True)
         b64 = base64.b64encode(out.read_bytes()).decode("ascii")
-    family = FONT_DISPLAY if "SpaceGrotesk" in ttf.name else FONT_MONO
-    weight = "700" if "Bold" in ttf.name else ("500" if "Medium" in ttf.name else "400")
-    if weight_hint:
-        weight = weight_hint
     return (
         f"@font-face{{font-family:'{family}';font-weight:{weight};font-style:normal;"
         f"src:url('data:font/woff;base64,{b64}') format('woff');}}"
@@ -177,227 +148,139 @@ def _subset_woff(ttf: Path, text: str, weight_hint: str) -> str:
 
 def _font_css(corpus: str) -> str:
     fonts = _ensure_fonts()
-    faces = [
-        _subset_woff(fonts["SpaceGrotesk-Regular.ttf"], corpus, "400"),
-        _subset_woff(fonts["SpaceGrotesk-Medium.ttf"], corpus, "500"),
-        _subset_woff(fonts["SpaceGrotesk-Bold.ttf"], corpus, "700"),
-        _subset_woff(fonts["JetBrainsMono-Regular.ttf"], corpus, "400"),
-        _subset_woff(fonts["JetBrainsMono-Bold.ttf"], corpus, "700"),
-    ]
-    return "\n".join(faces)
+    return "\n".join(
+        [
+            _subset_woff(fonts["Cormorant-Regular.ttf"], corpus, FONT_DISPLAY, "400"),
+            _subset_woff(fonts["Cormorant-Medium.ttf"], corpus, FONT_DISPLAY, "500"),
+            _subset_woff(fonts["Cormorant-Bold.ttf"], corpus, FONT_DISPLAY, "700"),
+            _subset_woff(fonts["SpaceGrotesk-Regular.ttf"], corpus, FONT_UI, "400"),
+            _subset_woff(fonts["SpaceGrotesk-Medium.ttf"], corpus, FONT_UI, "500"),
+            _subset_woff(fonts["SpaceGrotesk-Bold.ttf"], corpus, FONT_UI, "700"),
+            _subset_woff(fonts["JetBrainsMono-Regular.ttf"], corpus, FONT_MONO, "400"),
+            _subset_woff(fonts["JetBrainsMono-Bold.ttf"], corpus, FONT_MONO, "700"),
+        ]
+    )
+
+
+def _shared_keyframes() -> str:
+    """One small shared set used by every card."""
+    return """
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{opacity:0;transform:translateY(8px) scale(.86)}70%{opacity:1;transform:translateY(-2px) scale(1.06)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes swing{0%{opacity:0;transform:translateY(48px) rotate(-7deg) scale(.92)}62%{opacity:1;transform:translateY(-6px) rotate(1.5deg) scale(1.03)}82%{transform:translateY(2px) rotate(-.4deg) scale(.995)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.35)}}
+@keyframes ring{0%{opacity:.7;transform:scale(.4)}100%{opacity:0;transform:scale(2.4)}}
+""".strip()
 
 
 def _motion_css(static: bool) -> str:
-    # Final frame is the default so GitHub/img still shows content if CSS
-    # animations are skipped. Motion only runs under no-preference.
-    base = ".in{opacity:1;transform:none}.bar{transform:none}.cell{opacity:1}"
+    base = (
+        ".rise,.grow,.fade,.pop,.swing{opacity:1;transform:none}"
+        ".bar{transform:none}"
+        ".cell{opacity:1}"
+        ".nudge,.pulse,.ring{animation:none}"
+    )
     if static:
         return base
     return f"""
 {base}
-.pulse{{opacity:.75}}
+{_shared_keyframes()}
 @media (prefers-reduced-motion:no-preference){{
-  .in{{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.23,1,.32,1) forwards}}
-  .bar{{transform-origin:bottom;transform:scaleY(0);animation:grow .8s cubic-bezier(.23,1,.32,1) forwards}}
-  .cell{{opacity:0;animation:fade .45s ease forwards}}
-  .pulse{{animation:pulse 2.4s ease-in-out infinite}}
+  .rise{{opacity:0;transform:translateY(18px);animation:rise .75s cubic-bezier(.23,1,.32,1) forwards}}
+  .grow{{transform-origin:bottom;transform-box:fill-box;transform:scaleY(0);animation:grow .85s cubic-bezier(.23,1,.32,1) forwards}}
+  .bar{{transform-origin:bottom;transform-box:fill-box;transform:scaleY(0);animation:grow .85s cubic-bezier(.23,1,.32,1) forwards}}
+  .fade{{opacity:0;animation:fade .4s ease forwards}}
+  .cell{{opacity:0;animation:fade .35s ease forwards}}
+  .pop{{opacity:0;animation:pop .55s cubic-bezier(.34,1.56,.64,1) forwards}}
+  .swing{{opacity:0;transform:translateY(48px) rotate(-7deg);animation:swing .95s cubic-bezier(.22,1.2,.36,1) forwards}}
+  .nudge{{animation:nudge 2.2s ease-in-out infinite}}
+  .pulse{{animation:pulse 1.8s ease-in-out infinite}}
+  .ring{{transform-origin:center;animation:ring 2.4s ease-out infinite}}
 }}
-@keyframes rise{{to{{opacity:1;transform:translateY(0)}}}}
-@keyframes grow{{to{{transform:scaleY(1)}}}}
-@keyframes fade{{to{{opacity:1}}}}
-@keyframes pulse{{0%,100%{{opacity:.55}}50%{{opacity:1}}}}
 @media (prefers-reduced-motion:reduce){{
-  .in,.bar,.cell,.pulse{{animation:none!important;opacity:1!important;transform:none!important}}
+  .rise,.grow,.fade,.pop,.swing,.bar,.cell,.nudge,.pulse,.ring{{animation:none!important;opacity:1!important;transform:none!important}}
 }}
 """.strip()
 
 
 def _style(corpus: str, static: bool, extra: str = "") -> str:
-    return f"<style>\n{_font_css(corpus)}\n{_motion_css(static)}\n{extra}\n</style>"
+    return (
+        f"<style>\n{_font_css(corpus)}\n{_motion_css(static)}\n"
+        f".serif{{font-family:'{FONT_DISPLAY}',serif}}"
+        f".ui{{font-family:'{FONT_UI}',sans-serif}}"
+        f".mono{{font-family:'{FONT_MONO}',monospace}}\n{extra}\n</style>"
+    )
 
 
-def _delay_attr(seconds: float, static: bool) -> str:
+def _delay(seconds: float, static: bool) -> str:
     if static:
         return ""
     return f' style="animation-delay:{seconds:.2f}s"'
 
 
-def _smil_opacity(begin: float, static: bool, dur: float = 0.6) -> str:
-    if static:
-        return ""
+def _card_shell(width: int, height: int, fill: str = CARD) -> str:
     return (
-        f'<animate attributeName="opacity" from="0" to="1" dur="{dur}s" '
-        f'begin="{begin:.2f}s" fill="freeze"/>'
+        f'<rect width="{width}" height="{height}" rx="20" fill="{BG}"/>'
+        f'<rect x="1.5" y="1.5" width="{width-3}" height="{height-3}" rx="18.5" '
+        f'fill="{fill}" stroke="{JET}" stroke-width="1.25"/>'
     )
 
 
-def _portrait_data_uri() -> str | None:
-    try:
-        from PIL import Image
-    except ImportError:
-        return None
-    source = next((p for p in PORTRAIT_CANDIDATES if p.exists()), None)
-    if source is None:
-        return None
-    img = Image.open(source).convert("RGB")
-    w, h = img.size
-    side = min(w, h)
-    left = max(0, (w - side) // 2 - int(w * 0.04))
-    top = max(0, (h - side) // 2 - int(h * 0.08))
-    crop = img.crop((left, top, left + side, top + side)).resize((240, 240), Image.Resampling.LANCZOS)
-    buf = io.BytesIO()
-    crop.save(buf, format="JPEG", quality=82, optimize=True)
-    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
-
+# ── hero ─────────────────────────────────────────────────────────────────────
 
 def render_hero(static: bool) -> str:
-    portrait = _portrait_data_uri()
-    corpus = f"{NAME}{TAGLINE}{LOCATION}AI/ML Engineer"
+    corpus = "".join(NAME_LINES) + TAGLINE + STATUS + "AI ML engineer"
     delay = DELAY["hero"]
-    width, height = 880, 280
+    w, h = 880, 260
 
-    portrait_block = ""
-    text_x = 40
-    if portrait:
-        text_x = 300
-        fade = _smil_opacity(delay, static)
-        portrait_block = f"""
+    # Name lines rise one at a time
+    name_svg = []
+    y = 92
+    for i, line in enumerate(NAME_LINES):
+        d = delay + i * 0.22
+        name_svg.append(
+            f'<text class="rise serif" x="48" y="{y}" fill="{TEXT}" font-size="54" '
+            f'font-weight="700" letter-spacing="-0.5"{_delay(d, static)}>{_esc(line)}</text>'
+        )
+        y += 58
+
+    # Shine: SMIL-animated gradientTransform across the name (CSS bg-clip:text can't do SVG text)
+    shine = ""
+    if not static:
+        shine = f"""
   <defs>
-    <clipPath id="face"><circle cx="150" cy="140" r="96"/></clipPath>
+    <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="220" y2="0">
+      <stop offset="0%" stop-color="{TEXT}" stop-opacity="0"/>
+      <stop offset="45%" stop-color="{BRASS}" stop-opacity=".95"/>
+      <stop offset="55%" stop-color="{TEXT}" stop-opacity="1"/>
+      <stop offset="100%" stop-color="{TEXT}" stop-opacity="0"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+        from="-260 0" to="920 0" dur="3.6s" begin="1.2s" repeatCount="indefinite"/>
+    </linearGradient>
   </defs>
-  <circle cx="150" cy="140" r="100" fill="{PANEL}" stroke="{BRAND}" stroke-width="2"/>
-  <image href="{portrait}" x="54" y="44" width="192" height="192" clip-path="url(#face)" preserveAspectRatio="xMidYMid slice"/>
-  <circle cx="150" cy="140" r="100" fill="none" stroke="{BRAND}" stroke-width="2" opacity="0.9">{fade}</circle>
+  <text class="serif" x="48" y="92" fill="url(#shine)" font-size="54" font-weight="700" letter-spacing="-0.5" opacity=".9">{_esc(NAME_LINES[0])}</text>
+  <text class="serif" x="48" y="150" fill="url(#shine)" font-size="54" font-weight="700" letter-spacing="-0.5" opacity=".9">{_esc(NAME_LINES[1])}</text>
 """
 
-    d_name = delay + 0.05
-    d_line = delay + 0.18
-    d_loc = delay + 0.32
-
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{_esc(NAME)}">
-  {_style(corpus, static, f".t{{font-family:'{FONT_DISPLAY}',sans-serif}}.m{{font-family:'{FONT_MONO}',monospace}}")}
-  <rect width="{width}" height="{height}" rx="18" fill="{BG}"/>
-  <rect x="1" y="1" width="{width-2}" height="{height-2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-  <rect x="24" y="22" width="6" height="44" rx="3" fill="{BRAND}" class="pulse"/>
-{portrait_block}
-  <g class="in"{_delay_attr(d_name, static)}>
-    <text x="{text_x}" y="108" fill="{TEXT}" font-size="36" font-weight="700" class="t" letter-spacing="-0.5">{_esc(NAME)}</text>
-  </g>
-  <g class="in"{_delay_attr(d_line, static)}>
-    <text x="{text_x}" y="148" fill="{MUTED}" font-size="15" font-weight="400" class="t">{_esc(TAGLINE)}</text>
-  </g>
-  <g class="in"{_delay_attr(d_loc, static)}>
-    <text x="{text_x}" y="188" fill="{BRAND}" font-size="13" font-weight="500" class="m">{_esc(LOCATION)}</text>
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{_esc(' '.join(NAME_LINES))}">
+  {_style(corpus, static)}
+  {_card_shell(w, h, BG)}
+  <rect x="48" y="36" width="36" height="3" rx="1.5" fill="{BRASS}" class="rise"{_delay(delay, static)}/>
+  {''.join(name_svg)}
+{shine}
+  <g class="rise"{_delay(delay + 0.5, static)}>
+    <text x="48" y="196" fill="{MUTED}" font-size="15" class="ui">{_esc(TAGLINE)}</text>
+    <circle class="pulse" cx="54" cy="222" r="4" fill="{BRASS}"/>
+    <text x="68" y="226" fill="{BRASS}" font-size="13" class="mono">{_esc(STATUS)}</text>
   </g>
 </svg>
 """
 
 
-def render_tile(tile: dict[str, str], index: int, static: bool) -> str:
-    corpus = f"{tile['label']}{tile['sub']}{tile['glyph']}open"
-    delay = DELAY[f"tile{index}"]
-    width, height = 280, 120
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{_esc(tile['label'])}">
-  {_style(corpus, static, f".t{{font-family:'{FONT_DISPLAY}',sans-serif}}.m{{font-family:'{FONT_MONO}',monospace}}")}
-  <rect width="{width}" height="{height}" rx="16" fill="{CARD}"/>
-  <rect x="1" y="1" width="{width-2}" height="{height-2}" rx="15" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-  <g class="in"{_delay_attr(delay, static)}>
-    <circle cx="44" cy="60" r="22" fill="{PANEL}" stroke="{BRAND}" stroke-width="1.5"/>
-    <text x="44" y="66" text-anchor="middle" fill="{BRAND}" font-size="16" font-weight="700" class="m">{_esc(tile['glyph'])}</text>
-    <text x="82" y="54" fill="{TEXT}" font-size="18" font-weight="700" class="t">{_esc(tile['label'])}</text>
-    <text x="82" y="78" fill="{MUTED}" font-size="12" font-weight="400" class="m">{_esc(tile['sub'])}</text>
-  </g>
-</svg>
-"""
-
-
-def _month_totals(days: list[dict]) -> list[tuple[str, int]]:
-    totals: Counter[str] = Counter()
-    for day in days:
-        key = str(day["date"])[:7]
-        totals[key] += int(day["count"])
-    items = sorted(totals.items())
-    return items[-12:]
-
-
-def _active_days(days: list[dict]) -> int:
-    return sum(1 for day in days if int(day["count"]) > 0)
-
-
-def render_chart(payload: dict, static: bool) -> str:
-    days = payload["days"]
-    stats = payload["stats"]
-    months = _month_totals(days)
-    active = _active_days(days)
-    streak = int(stats.get("current_streak", 0))
-    best = stats.get("best_day", {})
-    best_label = f"{best.get('date', '—')} · {best.get('count', 0)}"
-    corpus = (
-        f"Contributions per month streak {streak} active days {active} "
-        f"busiest {best_label} " + " ".join(m for m, _ in months) + "JanFebMarAprMayJunJulAugSepOctNovDec"
-    )
-    delay = DELAY["chart"]
-    width, height = 880, 320
-    chart_x, chart_y = 48, 92
-    chart_w, chart_h = 784, 160
-    max_count = max((c for _, c in months), default=1) or 1
-    bar_gap = 10
-    bar_w = (chart_w - bar_gap * (len(months) - 1)) / max(len(months), 1)
-
-    bars = []
-    labels = []
-    for i, (month, count) in enumerate(months):
-        x = chart_x + i * (bar_w + bar_gap)
-        h = max(4, (count / max_count) * chart_h)
-        y = chart_y + chart_h - h
-        short = datetime.strptime(month + "-01", "%Y-%m-%d").strftime("%b")
-        bar_delay = delay + 0.15 + i * 0.06
-        bars.append(
-            f'<rect class="bar" x="{x:.1f}" y="{y:.1f}" width="{bar_w:.1f}" height="{h:.1f}" '
-            f'rx="6" fill="{BRAND}"{_delay_attr(bar_delay, static)}/>'
-        )
-        labels.append(
-            f'<text x="{x + bar_w/2:.1f}" y="{chart_y + chart_h + 22}" text-anchor="middle" '
-            f'fill="{MUTED}" font-size="11" class="m">{short}</text>'
-        )
-
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="Monthly contributions">
-  {_style(corpus, static, f".t{{font-family:'{FONT_DISPLAY}',sans-serif}}.m{{font-family:'{FONT_MONO}',monospace}}")}
-  <rect width="{width}" height="{height}" rx="18" fill="{BG}"/>
-  <rect x="1" y="1" width="{width-2}" height="{height-2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-  <g class="in"{_delay_attr(delay, static)}>
-    <text x="40" y="42" fill="{TEXT}" font-size="20" font-weight="700" class="t">Contributions / month</text>
-    <text x="40" y="68" fill="{MUTED}" font-size="12" class="m">last {len(months)} months · brand cyan</text>
-  </g>
-  {''.join(bars)}
-  {''.join(labels)}
-  <g class="in"{_delay_attr(delay + 0.35, static)}>
-    <text x="48" y="300" fill="{BRAND}" font-size="13" font-weight="700" class="m">streak {streak}d</text>
-    <text x="200" y="300" fill="{TEXT}" font-size="13" class="m">active {active}d</text>
-    <text x="380" y="300" fill="{MUTED}" font-size="13" class="m">busiest {_esc(best_label)}</text>
-  </g>
-</svg>
-"""
-
-
-def render_repo(repo: dict[str, str], index: int, static: bool) -> str:
-    corpus = f"{repo['title']}{repo['blurb']}{repo['stack']}{repo['repo']}featured"
-    delay = DELAY[f"repo{index}"]
-    width, height = 880, 150
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{_esc(repo['title'])}">
-  {_style(corpus, static, f".t{{font-family:'{FONT_DISPLAY}',sans-serif}}.m{{font-family:'{FONT_MONO}',monospace}}")}
-  <rect width="{width}" height="{height}" rx="18" fill="{CARD}"/>
-  <rect x="1" y="1" width="{width-2}" height="{height-2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-  <rect x="0" y="24" width="6" height="102" rx="3" fill="{BRAND}"/>
-  <g class="in"{_delay_attr(delay, static)}>
-    <text x="36" y="48" fill="{BRAND}" font-size="12" font-weight="500" class="m">featured / {_esc(repo['repo'])}</text>
-    <text x="36" y="78" fill="{TEXT}" font-size="22" font-weight="700" class="t">{_esc(repo['title'])}</text>
-    <text x="36" y="106" fill="{MUTED}" font-size="14" class="t">{_esc(repo['blurb'])}</text>
-    <text x="36" y="130" fill="{BRAND_DIM}" font-size="12" class="m">{_esc(repo['stack'])}</text>
-  </g>
-</svg>
-"""
-
+# ── contribution graph ───────────────────────────────────────────────────────
 
 def render_graph(payload: dict, static: bool) -> str:
     days = sorted(payload["days"], key=lambda d: str(d["date"]))
@@ -433,58 +316,245 @@ def render_graph(payload: dict, static: bool) -> str:
         x = week * step
         y = row * step
         level = max(0, min(int(day.get("level", 0)), len(HEAT) - 1))
-        color = HEAT[level]
-        cell_delay = delay + (week / max(week_count, 1)) * 1.2 + row * 0.01
+        # Sweep left → right
+        cell_delay = delay + 0.15 + (week / max(week_count, 1)) * 1.35 + row * 0.008
         cells.append(
             f'<rect class="cell" x="{x}" y="{y}" width="{cell}" height="{cell}" rx="2" '
-            f'fill="{color}"{_delay_attr(cell_delay, static)}/>'
+            f'fill="{HEAT[level]}"{_delay(cell_delay, static)}/>'
         )
         if date.month != last_month and row <= 1:
             month_labels.append(
-                f'<text x="{x}" y="-8" fill="{MUTED}" font-size="10" class="m">{months[date.month - 1]}</text>'
+                f'<text x="{x}" y="-8" fill="{MUTED}" font-size="10" class="mono">{months[date.month - 1]}</text>'
             )
             last_month = date.month
 
     day_label_svg = "".join(
-        f'<text x="-8" y="{row * step + 9}" fill="{MUTED}" font-size="10" text-anchor="end" class="m">{label}</text>'
+        f'<text x="-8" y="{row * step + 9}" fill="{MUTED}" font-size="10" text-anchor="end" class="mono">{label}</text>'
         for row, label in day_labels.items()
     )
-
     legend_x = width - right - 18 * len(HEAT) - 72
-    legend_y = height - 16
     legend_cells = "".join(
-        f'<rect x="{36 + i * 16}" y="-10" width="11" height="11" rx="2" fill="{color}"/>'
-        for i, color in enumerate(HEAT)
+        f'<rect x="{36 + i * 16}" y="-10" width="11" height="11" rx="2" fill="{c}"/>'
+        for i, c in enumerate(HEAT)
     )
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{stats.get('total', 0)} contributions">
-  {_style(corpus, static, f".t{{font-family:'{FONT_DISPLAY}',sans-serif}}.m{{font-family:'{FONT_MONO}',monospace}}")}
-  <rect width="{width}" height="{height}" rx="18" fill="{BG}"/>
-  <rect x="1" y="1" width="{width-2}" height="{height-2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-  <g class="in"{_delay_attr(delay, static)}>
-    <text x="{left}" y="28" fill="{TEXT}" font-size="16" font-weight="700" class="t">{stats.get('total', 0)} contributions</text>
-    <text x="{left + 180}" y="28" fill="{MUTED}" font-size="12" class="m">streak {stats.get('current_streak', 0)} · longest {stats.get('longest_streak', 0)}</text>
+  {_style(corpus, static)}
+  {_card_shell(width, height, BG)}
+  <g class="rise"{_delay(delay, static)}>
+    <text x="{left}" y="30" fill="{TEXT}" font-size="18" font-weight="600" class="ui">{stats.get('total', 0)} contributions</text>
+    <text x="{left + 190}" y="30" fill="{MUTED}" font-size="12" class="mono">streak {stats.get('current_streak', 0)} · longest {stats.get('longest_streak', 0)}</text>
   </g>
   <g transform="translate({left},{top})">
-    {day_label_svg}
-    {''.join(month_labels)}
-    {''.join(cells)}
+    {day_label_svg}{''.join(month_labels)}{''.join(cells)}
   </g>
-  <g transform="translate({left},{legend_y})" class="in"{_delay_attr(delay + 1.0, static)}>
-    <text x="0" y="0" fill="{MUTED}" font-size="11" class="m">brand heatmap</text>
-  </g>
-  <g transform="translate({legend_x},{legend_y})" class="in"{_delay_attr(delay + 1.05, static)}>
-    <text x="0" y="0" fill="{MUTED}" font-size="11" class="m">Less</text>
+  <g transform="translate({legend_x},{height - 16})" class="rise"{_delay(delay + 1.4, static)}>
+    <text x="0" y="0" fill="{MUTED}" font-size="11" class="mono">Less</text>
     {legend_cells}
-    <text x="{36 + len(HEAT) * 16 + 4}" y="0" fill="{MUTED}" font-size="11" class="m">More</text>
+    <text x="{36 + len(HEAT) * 16 + 4}" y="0" fill="{MUTED}" font-size="11" class="mono">More</text>
   </g>
 </svg>
 """
 
 
+# ── monthly bars ─────────────────────────────────────────────────────────────
+
+def _month_totals(days: list[dict]) -> list[tuple[str, int]]:
+    totals: Counter[str] = Counter()
+    for day in days:
+        totals[str(day["date"])[:7]] += int(day["count"])
+    return sorted(totals.items())[-12:]
+
+
+def _active_days(days: list[dict]) -> int:
+    return sum(1 for day in days if int(day["count"]) > 0)
+
+
+def render_chart(payload: dict, static: bool) -> str:
+    days = payload["days"]
+    stats = payload["stats"]
+    months = _month_totals(days)
+    active = _active_days(days)
+    streak = int(stats.get("current_streak", 0))
+    best = stats.get("best_day", {})
+    best_label = f"{best.get('date', '—')} · {best.get('count', 0)}"
+    delay = DELAY["chart"]
+    w, h = 880, 340
+    chart_x, chart_y, chart_w, chart_h = 48, 100, 784, 168
+    max_count = max((c for _, c in months), default=1) or 1
+    best_month_i = max(range(len(months)), key=lambda i: months[i][1]) if months else 0
+    bar_gap = 10
+    bar_w = (chart_w - bar_gap * max(len(months) - 1, 0)) / max(len(months), 1)
+
+    corpus = (
+        f"Contributions per month streak {streak} active {active} busiest {best_label} "
+        + " ".join(f"{m}{c}" for m, c in months)
+        + "JanFebMarAprMayJunJulAugSepOctNovDec0123456789"
+    )
+
+    bars, labels, pop = [], [], ""
+    for i, (month, count) in enumerate(months):
+        x = chart_x + i * (bar_w + bar_gap)
+        bh = max(6, (count / max_count) * chart_h)
+        y = chart_y + chart_h - bh
+        short = datetime.strptime(month + "-01", "%Y-%m-%d").strftime("%b")
+        bar_delay = delay + 0.2 + i * 0.07
+        fill = BRASS if i == best_month_i else COFFEE
+        bars.append(
+            f'<rect class="bar" x="{x:.1f}" y="{y:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" '
+            f'rx="7" fill="{fill}"{_delay(bar_delay, static)}/>'
+        )
+        labels.append(
+            f'<text x="{x + bar_w / 2:.1f}" y="{chart_y + chart_h + 22}" text-anchor="middle" '
+            f'fill="{MUTED}" font-size="11" class="mono">{short}</text>'
+        )
+        if i == best_month_i:
+            pop = (
+                f'<text class="pop mono" x="{x + bar_w / 2:.1f}" y="{y - 10:.1f}" '
+                f'text-anchor="middle" fill="{BRASS}" font-size="14" font-weight="700"'
+                f'{_delay(bar_delay + 0.55, static)}>{count}</text>'
+            )
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Monthly contributions">
+  {_style(corpus, static)}
+  {_card_shell(w, h, BG)}
+  <g class="rise"{_delay(delay, static)}>
+    <text x="48" y="42" fill="{TEXT}" font-size="22" font-weight="600" class="ui">Contributions / month</text>
+    <text x="48" y="68" fill="{MUTED}" font-size="12" class="mono">last {len(months)} months · antique brass</text>
+  </g>
+  {''.join(bars)}
+  {pop}
+  {''.join(labels)}
+  <g class="rise"{_delay(delay + 0.9, static)}>
+    <text x="48" y="318" fill="{BRASS}" font-size="13" font-weight="700" class="mono">streak {streak}d</text>
+    <text x="200" y="318" fill="{TEXT}" font-size="13" class="mono">active {active}d</text>
+    <text x="380" y="318" fill="{MUTED}" font-size="13" class="mono">busiest {_esc(best_label)}</text>
+  </g>
+</svg>
+"""
+
+
+# ── tiles (biggest entrance + count-up) ───────────────────────────────────────
+
+def _count_up_frames(final: int, x: int, y: int, begin: float, static: bool) -> str:
+    """18 SMIL <set> frames — CSS can't change text content."""
+    steps = 18
+    values = [int(round(final * i / (steps - 1))) for i in range(steps)]
+    # Deduplicate consecutive frames but keep ~18 ticks of time
+    if static:
+        return (
+            f'<text x="{x}" y="{y}" fill="{BRASS}" font-size="42" font-weight="700" '
+            f'class="serif">{final}</text>'
+        )
+
+    # One text node per unique value; <set> shows/hides them
+    # Simpler approach: one text element, cycle visibility via multiple overlays
+    parts = []
+    frame_dur = 0.045
+    for i, val in enumerate(values):
+        t0 = begin + i * frame_dur
+        t1 = begin + (i + 1) * frame_dur if i < steps - 1 else begin + steps * frame_dur + 0.01
+        # Keep final value frozen
+        end_attr = f' end="{t1:.3f}s"' if i < steps - 1 else ""
+        parts.append(
+            f'<text x="{x}" y="{y}" fill="{BRASS}" font-size="42" font-weight="700" '
+            f'class="serif" opacity="0">{val}'
+            f'<set attributeName="opacity" to="1" begin="{t0:.3f}s"{end_attr}/>'
+            f'</text>'
+        )
+    # Final freeze
+    parts.append(
+        f'<text x="{x}" y="{y}" fill="{BRASS}" font-size="42" font-weight="700" '
+        f'class="serif" opacity="0">{final}'
+        f'<set attributeName="opacity" to="1" begin="{begin + steps * frame_dur:.3f}s"/>'
+        f'</text>'
+    )
+    return "\n".join(parts)
+
+
+def render_tile(
+    slug: str,
+    label: str,
+    sub: str,
+    number: int,
+    href_hint: str,
+    index: int,
+    static: bool,
+) -> str:
+    corpus = f"{label}{sub}{number}0123456789→{href_hint}"
+    delay = DELAY[f"tile{index}"]
+    w, h = 280, 168
+
+    count = _count_up_frames(number, 28, 78, delay + 0.35, static)
+
+    shine = ""
+    if not static:
+        shine = f"""
+  <defs>
+    <linearGradient id="tileShine{index}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="0">
+      <stop offset="0%" stop-color="{BRASS}" stop-opacity="0"/>
+      <stop offset="50%" stop-color="{BRASS}" stop-opacity=".35"/>
+      <stop offset="100%" stop-color="{BRASS}" stop-opacity="0"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+        from="-140 0" to="320 0" dur="4s" begin="{delay + 1.4:.2f}s" repeatCount="indefinite"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="{w-4}" height="{h-4}" rx="18" fill="url(#tileShine{index})" pointer-events="none"/>
+"""
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{_esc(label)} {number}">
+  {_style(corpus, static)}
+  <g class="swing"{_delay(delay, static)}>
+    {_card_shell(w, h, CARD)}
+    {shine}
+    <circle class="ring" cx="{w - 28}" cy="28" r="10" fill="none" stroke="{BRASS}" stroke-width="1.5"{_delay(delay + 0.5, static)}/>
+    <circle cx="{w - 28}" cy="28" r="3.5" fill="{BRASS}"/>
+    {count}
+    <text x="28" y="108" fill="{TEXT}" font-size="16" font-weight="600" class="ui">{_esc(label)}</text>
+    <text x="28" y="132" fill="{MUTED}" font-size="12" class="mono">{_esc(sub)}</text>
+    <g class="nudge"{_delay(delay + 1.0, static)}>
+      <path d="M{w-48} {h-36}h18m0 0l-5-5m5 5l-5 5" fill="none" stroke="{BRASS}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>
+"""
+
+
+# ── featured repos (bento sizes) ─────────────────────────────────────────────
+
+def render_repo(repo: dict, index: int, static: bool) -> str:
+    size = repo.get("size", "full")
+    if size == "wide":
+        w, h = 560, 200
+    elif size == "tall":
+        w, h = 300, 200
+    else:
+        w, h = 880, 150
+
+    corpus = f"{repo['title']}{repo['blurb']}{repo['stack']}{repo['repo']}featured→"
+    delay = DELAY[f"repo{index}"]
+
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{_esc(repo['title'])}">
+  {_style(corpus, static)}
+  <g class="rise"{_delay(delay, static)}>
+    {_card_shell(w, h, CARD)}
+    <rect x="0" y="28" width="5" height="{h - 56}" rx="2.5" fill="{BRASS}"/>
+    <text x="28" y="48" fill="{COFFEE}" font-size="11" font-weight="500" class="mono">featured / {_esc(repo['repo'])}</text>
+    <text x="28" y="82" fill="{TEXT}" font-size="{'22' if size != 'tall' else '18'}" font-weight="700" class="serif">{_esc(repo['title'])}</text>
+    <text x="28" y="112" fill="{MUTED}" font-size="13" class="ui">{_esc(repo['blurb'])}</text>
+    <text x="28" y="{h - 28}" fill="{BRASS}" font-size="12" class="mono">{_esc(repo['stack'])}</text>
+    <g class="nudge"{_delay(delay + 0.4, static)}>
+      <path d="M{w-40} {h-36}h16m0 0l-4-4m4 4l-4 4" fill="none" stroke="{BRASS}" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>
+"""
+
+
+# ── orchestration ────────────────────────────────────────────────────────────
+
 def _write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Collapse excess blank lines inside style for smaller files
     cleaned = re.sub(r"\n{3,}", "\n\n", content.strip()) + "\n"
     path.write_text(cleaned, encoding="utf-8")
     print(f"wrote {path.relative_to(ROOT)} ({path.stat().st_size:,} bytes)")
@@ -492,21 +562,30 @@ def _write(path: Path, content: str) -> None:
 
 def render_all(static: bool, data_path: Path) -> None:
     payload = json.loads(data_path.read_text(encoding="utf-8"))
+    stats = payload["stats"]
+    days = payload["days"]
     CARDS.mkdir(parents=True, exist_ok=True)
 
     _write(CARDS / "hero.svg", render_hero(static))
-    for i, tile in enumerate(TILES):
-        _write(CARDS / f"tile-{tile['slug']}.svg", render_tile(tile, i, static))
+    _write(CARDS / "graph.svg", render_graph(payload, static))
     _write(CARDS / "chart.svg", render_chart(payload, static))
+
+    tiles = [
+        ("streak", "Streak", "current day streak", int(stats.get("current_streak", 0)), "github"),
+        ("contribs", "Contributions", "last 12 months", int(stats.get("total", 0)), "portfolio"),
+        ("active", "Active days", "days with commits", _active_days(days), "linkedin"),
+    ]
+    for i, (slug, label, sub, number, hint) in enumerate(tiles):
+        _write(CARDS / f"tile-{slug}.svg", render_tile(slug, label, sub, number, hint, i, static))
+
     for i, repo in enumerate(FEATURED_REPOS):
         _write(CARDS / f"repo-{repo['slug']}.svg", render_repo(repo, i, static))
-    _write(CARDS / "graph.svg", render_graph(payload, static))
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Render animated SVG profile cards.")
-    parser.add_argument("--input", type=Path, default=DATA, help="contributions JSON")
-    parser.add_argument("--static", action="store_true", help="Freeze final frame (or STATIC=1)")
+    parser.add_argument("--input", type=Path, default=DATA)
+    parser.add_argument("--static", action="store_true")
     args = parser.parse_args()
     static = args.static or os.environ.get("STATIC") == "1"
     if not args.input.exists():
