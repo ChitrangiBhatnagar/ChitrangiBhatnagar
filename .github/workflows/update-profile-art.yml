@@ -9,6 +9,7 @@ on:
     paths:
       - "scripts/**"
       - "data/**"
+      - "cards/**"
       - ".github/workflows/update-profile-art.yml"
 
 permissions:
@@ -19,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  heatmap:
+  cards:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,17 +29,22 @@ jobs:
         with:
           python-version: "3.11"
 
-      # Only graph deps — avoid heavy portrait packages (pillow/opencv/rembg) in CI.
       - name: Install dependencies
-        run: pip install "requests==2.32.3" "beautifulsoup4==4.12.3"
+        run: |
+          pip install \
+            "requests==2.32.3" \
+            "beautifulsoup4==4.12.3" \
+            "fonttools>=4.56.0" \
+            "brotli>=1.1.0" \
+            "pillow>=10.0.0"
 
       - name: Fetch contributions
         run: python scripts/fetch_contributions.py
 
-      - name: Render heatmap SVG
-        run: python scripts/render_heatmap_svg.py
+      - name: Render SVG cards
+        run: python scripts/render_cards.py
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: refresh contribution graph [skip ci]"
-          file_pattern: "data/contributions.json contrib-heatmap.svg"
+          commit_message: "chore: refresh profile cards [skip ci]"
+          file_pattern: "data/contributions.json cards/*.svg"

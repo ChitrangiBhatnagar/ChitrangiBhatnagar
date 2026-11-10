@@ -92,7 +92,9 @@ def fetch_contributions(username: str) -> dict[str, object]:
     counts = Counter(int(day["count"]) for day in days)
     best_day = max(days, key=lambda item: (int(item["count"]), str(item["date"])))
     current_streak, longest_streak = _streaks(days)
-    monthly_totals = Counter(str(day["date"])[0:7] for day in days)
+    monthly_totals: Counter[str] = Counter()
+    for day in days:
+        monthly_totals[str(day["date"])[0:7]] += int(day["count"])
     cell_total = sum(int(day["count"]) for day in days)
 
     payload = {

@@ -5,3 +5,4 @@ source-prepped.png
 temp_prep_test.py
 .venv/
 venv/
+.cache/

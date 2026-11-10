@@ -1,7 +1,9 @@
 requests==2.32.3
 beautifulsoup4==4.12.3
-# portrait-only (not needed by the daily workflow):
-pillow
+fonttools>=4.56.0
+brotli>=1.1.0
+pillow>=10.0.0
+# portrait / ASCII experiments (local only):
 numpy
 opencv-python
 rembg
