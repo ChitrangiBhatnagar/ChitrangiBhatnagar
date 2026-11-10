@@ -21,9 +21,6 @@
   <a href="https://github.com/ChitrangiBhatnagar/agentic-observability-platform"><img src="cards/repo-agentic-observability.svg" width="64%" alt="Agentic Observability"/></a>
   <a href="https://github.com/ChitrangiBhatnagar/ResearchOZ"><img src="cards/repo-research-oz.svg" width="34%" alt="ResearchOZ"/></a>
 </p>
-<p align="center">
-  <a href="https://github.com/ChitrangiBhatnagar/chitrangi-ai-nexus"><img src="cards/repo-ai-nexus.svg" width="100%" alt="chitrangi-ai-nexus"/></a>
-</p>
 
 <details>
 <summary><b>weekly coding</b></summary>

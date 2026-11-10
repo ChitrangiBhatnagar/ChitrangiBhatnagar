@@ -91,15 +91,6 @@ FEATURED_REPOS = [
         "url": "https://github.com/ChitrangiBhatnagar/ResearchOZ",
         "size": "tall",   # bento: 34%
     },
-    {
-        "slug": "ai-nexus",
-        "title": "chitrangi-ai-nexus",
-        "repo": "chitrangi-ai-nexus",
-        "blurb": "Portfolio with motion, CI/CD, and GitHub Pages.",
-        "stack": "React 18 · Vite",
-        "url": "https://github.com/ChitrangiBhatnagar/chitrangi-ai-nexus",
-        "size": "full",   # bento: 100%
-    },
 ]
 
 
@@ -172,7 +163,6 @@ def _shared_keyframes() -> str:
 @keyframes swing{0%{opacity:0;transform:translateY(48px) rotate(-7deg) scale(.92)}62%{opacity:1;transform:translateY(-6px) rotate(1.5deg) scale(1.03)}82%{transform:translateY(2px) rotate(-.4deg) scale(.995)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
 @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
 @keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.35)}}
-@keyframes ring{0%{opacity:.7;transform:scale(.4)}100%{opacity:0;transform:scale(2.4)}}
 """.strip()
 
 
@@ -181,7 +171,7 @@ def _motion_css(static: bool) -> str:
         ".rise,.grow,.fade,.pop,.swing{opacity:1;transform:none}"
         ".bar{transform:none}"
         ".cell{opacity:1}"
-        ".nudge,.pulse,.ring{animation:none}"
+        ".nudge,.pulse{animation:none}"
     )
     if static:
         return base
@@ -198,10 +188,9 @@ def _motion_css(static: bool) -> str:
   .swing{{opacity:0;transform:translateY(48px) rotate(-7deg);animation:swing .95s cubic-bezier(.22,1.2,.36,1) forwards}}
   .nudge{{animation:nudge 2.2s ease-in-out infinite}}
   .pulse{{animation:pulse 1.8s ease-in-out infinite}}
-  .ring{{transform-origin:center;animation:ring 2.4s ease-out infinite}}
 }}
 @media (prefers-reduced-motion:reduce){{
-  .rise,.grow,.fade,.pop,.swing,.bar,.cell,.nudge,.pulse,.ring{{animation:none!important;opacity:1!important;transform:none!important}}
+  .rise,.grow,.fade,.pop,.swing,.bar,.cell,.nudge,.pulse{{animation:none!important;opacity:1!important;transform:none!important}}
 }}
 """.strip()
 
@@ -437,39 +426,51 @@ def render_chart(payload: dict, static: bool) -> str:
 # ── tiles (biggest entrance + count-up) ───────────────────────────────────────
 
 def _count_up_frames(final: int, x: int, y: int, begin: float, static: bool) -> str:
-    """18 SMIL <set> frames — CSS can't change text content."""
-    steps = 18
-    values = [int(round(final * i / (steps - 1))) for i in range(steps)]
-    # Deduplicate consecutive frames but keep ~18 ticks of time
-    if static:
+    """18 SMIL frames — CSS can't change text content."""
+    if static or final <= 0:
         return (
             f'<text x="{x}" y="{y}" fill="{BRASS}" font-size="42" font-weight="700" '
             f'class="serif">{final}</text>'
         )
 
-    # One text node per unique value; <set> shows/hides them
-    # Simpler approach: one text element, cycle visibility via multiple overlays
+    steps = 18
+    frame_dur = 0.05
+    values = [int(round(final * i / (steps - 1))) for i in range(steps)]
+    # Collapse consecutive duplicates so we don't stack identical glyphs
+    frames: list[tuple[int, int]] = []
+    for val in values:
+        if frames and frames[-1][0] == val:
+            frames[-1] = (val, frames[-1][1] + 1)
+        else:
+            frames.append((val, 1))
+
     parts = []
-    frame_dur = 0.045
-    for i, val in enumerate(values):
-        t0 = begin + i * frame_dur
-        t1 = begin + (i + 1) * frame_dur if i < steps - 1 else begin + steps * frame_dur + 0.01
-        # Keep final value frozen
-        end_attr = f' end="{t1:.3f}s"' if i < steps - 1 else ""
+    cursor = begin
+    for i, (val, hold) in enumerate(frames):
+        dur = frame_dur * hold
+        is_last = i == len(frames) - 1
+        fill = "freeze" if is_last else "remove"
         parts.append(
             f'<text x="{x}" y="{y}" fill="{BRASS}" font-size="42" font-weight="700" '
             f'class="serif" opacity="0">{val}'
-            f'<set attributeName="opacity" to="1" begin="{t0:.3f}s"{end_attr}/>'
+            f'<set attributeName="opacity" to="1" begin="{cursor:.3f}s" dur="{dur:.3f}s" fill="{fill}"/>'
             f'</text>'
         )
-    # Final freeze
-    parts.append(
-        f'<text x="{x}" y="{y}" fill="{BRASS}" font-size="42" font-weight="700" '
-        f'class="serif" opacity="0">{final}'
-        f'<set attributeName="opacity" to="1" begin="{begin + steps * frame_dur:.3f}s"/>'
-        f'</text>'
-    )
+        cursor += dur
     return "\n".join(parts)
+
+
+def _tile_ring(cx: float, cy: float, begin: float, static: bool) -> str:
+    """Corner pulse ring via SMIL — clipped, never overflows into neighbour tiles."""
+    if static:
+        return f'<circle cx="{cx}" cy="{cy}" r="3.5" fill="{BRASS}"/>'
+    return f"""
+    <circle cx="{cx}" cy="{cy}" r="3.5" fill="{BRASS}"/>
+    <circle cx="{cx}" cy="{cy}" r="5" fill="none" stroke="{BRASS}" stroke-width="1.25" opacity="0">
+      <animate attributeName="r" values="5;16" dur="2.2s" begin="{begin:.2f}s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0" dur="2.2s" begin="{begin:.2f}s" repeatCount="indefinite"/>
+    </circle>
+"""
 
 
 def render_tile(
@@ -484,31 +485,38 @@ def render_tile(
     corpus = f"{label}{sub}{number}0123456789→{href_hint}"
     delay = DELAY[f"tile{index}"]
     w, h = 280, 168
+    cx, cy = w - 28, 28
 
     count = _count_up_frames(number, 28, 78, delay + 0.35, static)
+    ring = _tile_ring(cx, cy, delay + 0.9, static)
 
-    shine = ""
+    shine_defs = ""
+    shine_rect = ""
     if not static:
-        shine = f"""
-  <defs>
+        shine_defs = f"""
     <linearGradient id="tileShine{index}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="0">
       <stop offset="0%" stop-color="{BRASS}" stop-opacity="0"/>
-      <stop offset="50%" stop-color="{BRASS}" stop-opacity=".35"/>
+      <stop offset="50%" stop-color="{BRASS}" stop-opacity=".28"/>
       <stop offset="100%" stop-color="{BRASS}" stop-opacity="0"/>
       <animateTransform attributeName="gradientTransform" type="translate"
         from="-140 0" to="320 0" dur="4s" begin="{delay + 1.4:.2f}s" repeatCount="indefinite"/>
     </linearGradient>
-  </defs>
-  <rect x="2" y="2" width="{w-4}" height="{h-4}" rx="18" fill="url(#tileShine{index})" pointer-events="none"/>
 """
+        shine_rect = (
+            f'<rect x="2" y="2" width="{w - 4}" height="{h - 4}" rx="18" '
+            f'fill="url(#tileShine{index})" pointer-events="none"/>'
+        )
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{_esc(label)} {number}">
   {_style(corpus, static)}
-  <g class="swing"{_delay(delay, static)}>
+  <defs>
+    <clipPath id="tileClip{index}"><rect width="{w}" height="{h}" rx="20"/></clipPath>
+    {shine_defs}
+  </defs>
+  <g class="swing" clip-path="url(#tileClip{index})"{_delay(delay, static)}>
     {_card_shell(w, h, CARD)}
-    {shine}
-    <circle class="ring" cx="{w - 28}" cy="28" r="10" fill="none" stroke="{BRASS}" stroke-width="1.5"{_delay(delay + 0.5, static)}/>
-    <circle cx="{w - 28}" cy="28" r="3.5" fill="{BRASS}"/>
+    {shine_rect}
+    {ring}
     {count}
     <text x="28" y="108" fill="{TEXT}" font-size="16" font-weight="600" class="ui">{_esc(label)}</text>
     <text x="28" y="132" fill="{MUTED}" font-size="12" class="mono">{_esc(sub)}</text>
